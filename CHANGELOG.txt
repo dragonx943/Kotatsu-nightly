@@ -8,4 +8,4 @@
 
 - [NetTruyen, NetTruyenVie] Fix for chapter fetching
 - [NetTruyen] Fix for chapter order
-- Add new sources: GocTruyenTranh [vi], Weeb Central [en]
+- Add new sources: GocTruyenTranh [vi], Weeb Central [en], TruyenHentaiVN [vi]
