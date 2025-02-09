@@ -1,9 +1,11 @@
-**App update:**
+**App Updates: **
 
-- Update translations: Vietnamese, French, Chinese, Italian,...
-- Advanced: Update dependencies (parsers)
+- UI (User Interface) fix: Bottom navigation bar
+- Fixes: App crashes, DateTimeAgo formatting 
+- Advanced: Update dependencies (Parsers)
 
-**Parsers update:**
+**Parser Updates:**
 
-- [wpcomics] Fixes
-- Add new source: Góc Truyện Tranh [vi]
+- [NetTruyen, NetTruyenVie] Fix for chapter fetching
+- [NetTruyen] Fix for chapter order
+- Add new sources: GocTruyenTranh [vi], Weeb Central [en]
