@@ -4,6 +4,6 @@
 
 **Parser Updates:**
 
-- [Cmanga] Small fixes
+- [CManga] Small fixes
 - [Weeb Central] Fix tags, chapter number
 - [ManhwaIndo] Fix "Content not found or removed" errors
