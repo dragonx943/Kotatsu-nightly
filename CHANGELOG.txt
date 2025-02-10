@@ -1,11 +1,9 @@
 **App Updates: **
 
-- UI (User Interface) fix: Bottom navigation bar
-- Fixes: App crashes, DateTimeAgo formatting 
-- Advanced: Update dependencies (Parsers)
+- Nothing changed...
 
 **Parser Updates:**
 
-- [NetTruyen, NetTruyenVie] Fix for chapter fetching
-- [NetTruyen] Fix for chapter order
-- Add new sources: GocTruyenTranh [vi], Weeb Central [en], TruyenHentaiVN [vi]
+- [Cmanga] Small fixes
+- [Weeb Central] Fix tags, chapter number
+- [ManhwaIndo] Fix "Content not found or removed" errors
