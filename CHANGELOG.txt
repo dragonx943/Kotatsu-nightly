@@ -1,9 +1,7 @@
 **App Updates: **
+-  UI (User Interface) Fixes
+-  Advanced: Update Kotlin to 2.1
 
-- Nothing changed...
-
-**Parser Updates:**
-
-- [CManga] Small fixes
-- [Weeb Central] Fix tags, chapter number
-- [ManhwaIndo] Fix "Content not found or removed" errors
+**Parser Updates: **
+- [TruyenHentaiVN] Fix tags
+- [WaManga] Fix NoSuchMethodError
