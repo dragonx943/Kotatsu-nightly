@@ -1,7 +1,10 @@
-**App Updates: **
--  UI (User Interface) Fixes
--  Advanced: Update Kotlin to 2.1
+**App Updates:**
 
-**Parser Updates: **
+- UI (User Interface) Fix: History dialog + Search bug
+- Advanced: Update Kotlin to 2.1
+
+**Parser Updates:**
+
 - [TruyenHentaiVN] Fix tags
 - [WaManga] Fix NoSuchMethodError
+- Add new source: Hentai18VN [vi]
