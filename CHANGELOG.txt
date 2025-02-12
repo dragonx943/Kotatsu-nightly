@@ -1,10 +1,9 @@
-**App Updates:**
+### App Updates:
 
-- UI (User Interface) Fix: History dialog + Search bug
-- Advanced: Update Kotlin to 2.1
+- Nothing changed...
 
-**Parser Updates:**
+### Parser Updates:
 
-- [TruyenHentaiVN] Fix tags
-- [WaManga] Fix NoSuchMethodError
-- Add new source: Hentai18VN [vi]
+- [TruyenHentaiVN] Fix tags + Refactor
+- [Hentai18VN] Fix chapter number + Refactor
+- Add new source: Ham Truyện [vi]
