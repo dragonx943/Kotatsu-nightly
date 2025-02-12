@@ -6,4 +6,5 @@
 
 - [TruyenHentaiVN] Fix tags + Refactor
 - [Hentai18VN] Fix chapter number + Refactor
+- [MuitoHentai] Fix missing chapter images
 - Add new source: Ham Truyện [vi]
