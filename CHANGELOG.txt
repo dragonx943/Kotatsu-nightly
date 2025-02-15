@@ -7,4 +7,5 @@
 
 ### Parser Updates:
 
-- Nothing changed...
+- Add new source: NewTruyen [vi]
+- Update sources domain [vi]: CBHentai, HentaiVN.plus, TruyenVn, Dưa Leo Truyện, Vcomycs, DocTruyen3Q, NetTruyen, NetTruyenFE, NetTruyenLL, NetTruyenSSR, NetTruyenUU, TopTruyen
