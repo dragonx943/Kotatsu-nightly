@@ -1,7 +1,10 @@
 ### App Updates:
 
-- Nothing changed...
+- UI (User Interface) improvement (Draft *): 
+	- Show Downloaded badge on Library
+	- Saved and favorites indicators in manga lists*
+- Fix: Picking directory bug on some devices
 
 ### Parser Updates:
 
-- Add new sources: NHentai.to [all], NHentai.xxx [all]
+- Nothing changed...
