@@ -1,8 +1,8 @@
 ### App Updates:
 
-- Improvement: Update local archive indexes / Padding for pages and chapters
+- Improvement: Configurable manga lists badges
+- Advanced: Update dependencies (libs)
 
 ### Parser Updates:
 
-- [WaManga] Fixes
-- [NHentai.xxx] Fixes
+- Nothing changed...
