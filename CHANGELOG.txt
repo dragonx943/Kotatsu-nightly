@@ -1,11 +1,8 @@
 ### App Updates:
 
-- UI (User Interface) improvement (Draft *): 
-	- Show Downloaded badge on Library
-	- Saved and favorites indicators in manga lists*
-- Fix: Picking directory bug on some devices
+- Improvement: Update local archive indexes / Padding for pages and chapters
 
 ### Parser Updates:
 
-- Add new source: NewTruyen [vi]
-- Update sources domain [vi]: CBHentai, HentaiVN.plus, TruyenVn, Dưa Leo Truyện, Vcomycs, DocTruyen3Q, NetTruyen, NetTruyenFE, NetTruyenLL, NetTruyenSSR, NetTruyenUU, TopTruyen
+- [WaManga] Fixes
+- [NHentai.xxx] Fixes
