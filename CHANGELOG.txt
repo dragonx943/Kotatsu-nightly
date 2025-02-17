@@ -1,8 +1,11 @@
 ### App Updates:
 
-- Improvement: Configurable manga lists badges
-- Advanced: Update dependencies (libs)
+- Fix: Favorite categories visibility (Reported by users)
+- Improvement: Advanced global search
 
 ### Parser Updates:
 
-- Nothing changed...
+- [LxManga] Fix tags + Refactor
+- [TruyenHentaiVN] Fix tags (Connection error bug)
+- Add new source: viHentai [vi]
+- Update source domain: Kiryuu [id]
