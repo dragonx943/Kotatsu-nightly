@@ -1,11 +1,21 @@
 ### App Updates:
 
-- Fix: Favorite categories visibility (Reported by users)
-- Improvement: Advanced global search
+- Fixes:
+	- Recalculate manga progress on cover image
+	- Deleted favourites are updated (Bug)
+	- Warnings when building (Advanced)
+- Improvements:
+	- Progress visibility on details menu
+	- Global search + Author search support
+	- Add items + Improved reading interface
+- Restore: Reader info bar outline
+- Update translations: Czech, Portuguese, Vietnamese, Serbian,...
+- Advanced: Update dependencies (libs + parsers)
 
 ### Parser Updates:
 
-- [LxManga] Fix tags + Refactor
-- [TruyenHentaiVN] Fix tags (Connection error bug)
-- Add new source: viHentai [vi]
-- Update source domain: Kiryuu [id]
+- [ExHentai] Add search by author
+- [CManga] Fixes
+- [Grouple] Small fixes
+- [MangaDex] Add search by author
+- Improvement: Add artist filter

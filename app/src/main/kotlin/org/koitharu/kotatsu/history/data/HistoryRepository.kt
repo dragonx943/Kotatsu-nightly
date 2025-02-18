@@ -33,6 +33,7 @@ import org.koitharu.kotatsu.parsers.util.findById
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
 import org.koitharu.kotatsu.scrobbling.common.domain.Scrobbler
 import org.koitharu.kotatsu.scrobbling.common.domain.tryScrobble
+import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.tracker.domain.CheckNewChaptersUseCase
 import javax.inject.Inject
 import javax.inject.Provider
@@ -52,9 +53,17 @@ class HistoryRepository @Inject constructor(
 		return entities.map { it.toManga() }
 	}
 
-	suspend fun search(query: String, limit: Int): List<Manga> {
-		val entities = db.getHistoryDao().search("%$query%", limit)
-		return entities.toMangaList().sortedBy { it.title.levenshteinDistance(query) }
+	suspend fun search(query: String, kind: SearchKind, limit: Int): List<Manga> {
+		val dao = db.getHistoryDao()
+		val q = "%$query%"
+		val entities = when (kind) {
+			SearchKind.SIMPLE,
+			SearchKind.TITLE -> dao.searchByTitle(q, limit).sortedBy { it.manga.title.levenshteinDistance(query) }
+
+			SearchKind.AUTHOR -> dao.searchByAuthor(q, limit)
+			SearchKind.TAG -> dao.searchByTag(q, limit)
+		}
+		return entities.toMangaList()
 	}
 
 	suspend fun getCount(): Int {
@@ -145,10 +154,11 @@ class HistoryRepository @Inject constructor(
 
 	suspend fun getProgress(mangaId: Long, mode: ProgressIndicatorMode): ReadingProgress? {
 		val entity = db.getHistoryDao().find(mangaId) ?: return null
+		val fixedPercent = if (ReadingProgress.isCompleted(entity.percent)) 1f else entity.percent
 		return ReadingProgress(
-			percent = entity.percent,
+			percent = fixedPercent,
 			totalChapters = entity.chaptersCount,
-			mode = mode,
+			mode = mode
 		).takeIf { it.isValid() }
 	}
 

@@ -37,17 +37,13 @@ import org.koitharu.kotatsu.list.ui.model.EmptyState
 import org.koitharu.kotatsu.list.ui.model.ListModel
 import org.koitharu.kotatsu.list.ui.model.LoadingFooter
 import org.koitharu.kotatsu.list.ui.model.LoadingState
-import org.koitharu.kotatsu.local.data.LocalMangaRepository
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
-import org.koitharu.kotatsu.parsers.model.SortOrder
 import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
 import org.koitharu.kotatsu.search.domain.SearchKind
 import org.koitharu.kotatsu.search.domain.SearchV2Helper
 import javax.inject.Inject
 
 private const val MAX_PARALLELISM = 4
-private const val MIN_HAS_MORE_ITEMS = 8
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -56,7 +52,6 @@ class SearchViewModel @Inject constructor(
 	private val searchHelperFactory: SearchV2Helper.Factory,
 	private val sourcesRepository: MangaSourcesRepository,
 	private val historyRepository: HistoryRepository,
-	private val localMangaRepository: LocalMangaRepository,
 	private val favouritesRepository: FavouritesRepository,
 ) : BaseViewModel() {
 
@@ -65,7 +60,7 @@ class SearchViewModel @Inject constructor(
 
 	private val retryCounter = MutableStateFlow(0)
 	private val listData = retryCounter.flatMapLatest {
-		searchImpl(query).withLoading().withErrorHandling()
+		searchImpl().withLoading().withErrorHandling()
 	}.stateIn(viewModelScope + Dispatchers.Default, SharingStarted.Eagerly, null)
 
 	val list: StateFlow<List<ListModel>> = combine(
@@ -108,10 +103,10 @@ class SearchViewModel @Inject constructor(
 	}
 
 	@CheckResult
-	private fun searchImpl(q: String): Flow<List<SearchResultsListModel>> = channelFlow {
-		searchHistory(q)?.let { send(it) }
-		searchFavorites(q)?.let { send(it) }
-		searchLocal(q)?.let { send(it) }
+	private fun searchImpl(): Flow<List<SearchResultsListModel>> = channelFlow {
+		searchHistory()?.let { send(it) }
+		searchFavorites()?.let { send(it) }
+		searchLocal()?.let { send(it) }
 		val sources = sourcesRepository.getEnabledSources()
 		if (sources.isEmpty()) {
 			return@channelFlow
@@ -136,7 +131,6 @@ class SearchViewModel @Inject constructor(
 							SearchResultsListModel(
 								titleResId = 0,
 								source = source,
-								hasMore = list.size > MIN_HAS_MORE_ITEMS,
 								list = list,
 								error = null,
 								listFilter = result.listFilter,
@@ -146,7 +140,7 @@ class SearchViewModel @Inject constructor(
 					},
 					onFailure = { error ->
 						error.printStackTraceDebug()
-						SearchResultsListModel(0, source, null, null, true, emptyList(), error)
+						SearchResultsListModel(0, source, null, null, emptyList(), error)
 					},
 				)
 				if (item != null) {
@@ -158,16 +152,15 @@ class SearchViewModel @Inject constructor(
 		.filterNotNull()
 		.onEmpty { emit(emptyList()) }
 
-	private suspend fun searchHistory(q: String): SearchResultsListModel? {
+	private suspend fun searchHistory(): SearchResultsListModel? {
 		return runCatchingCancellable {
-			historyRepository.search(q, Int.MAX_VALUE)
+			historyRepository.search(query, kind, Int.MAX_VALUE)
 		}.fold(
 			onSuccess = { result ->
 				if (result.isNotEmpty()) {
 					SearchResultsListModel(
 						titleResId = R.string.history,
 						source = UnknownMangaSource,
-						hasMore = false,
 						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
 						error = null,
 						listFilter = null,
@@ -181,7 +174,6 @@ class SearchViewModel @Inject constructor(
 				SearchResultsListModel(
 					titleResId = R.string.history,
 					source = UnknownMangaSource,
-					hasMore = false,
 					list = emptyList(),
 					error = error,
 					listFilter = null,
@@ -191,17 +183,20 @@ class SearchViewModel @Inject constructor(
 		)
 	}
 
-	private suspend fun searchFavorites(q: String): SearchResultsListModel? {
+	private suspend fun searchFavorites(): SearchResultsListModel? {
 		return runCatchingCancellable {
-			favouritesRepository.search(q, Int.MAX_VALUE)
+			favouritesRepository.search(query, kind, Int.MAX_VALUE)
 		}.fold(
 			onSuccess = { result ->
 				if (result.isNotEmpty()) {
 					SearchResultsListModel(
 						titleResId = R.string.favourites,
 						source = UnknownMangaSource,
-						hasMore = false,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(
+							manga = result,
+							mode = ListMode.GRID,
+							flags = MangaListMapper.NO_FAVORITE,
+						),
 						error = null,
 						listFilter = null,
 						sortOrder = null,
@@ -214,7 +209,6 @@ class SearchViewModel @Inject constructor(
 				SearchResultsListModel(
 					titleResId = R.string.favourites,
 					source = UnknownMangaSource,
-					hasMore = false,
 					list = emptyList(),
 					error = error,
 					listFilter = null,
@@ -224,20 +218,23 @@ class SearchViewModel @Inject constructor(
 		)
 	}
 
-	private suspend fun searchLocal(q: String): SearchResultsListModel? {
+	private suspend fun searchLocal(): SearchResultsListModel? {
 		return runCatchingCancellable {
-			localMangaRepository.getList(0, SortOrder.RELEVANCE, MangaListFilter(query = q))
+			searchHelperFactory.create(LocalMangaSource).invoke(query, kind)
 		}.fold(
 			onSuccess = { result ->
-				if (result.isNotEmpty()) {
+				if (!result?.manga.isNullOrEmpty()) {
 					SearchResultsListModel(
 						titleResId = 0,
 						source = LocalMangaSource,
-						hasMore = result.size > MIN_HAS_MORE_ITEMS,
-						list = mangaListMapper.toListModelList(manga = result, mode = ListMode.GRID),
+						list = mangaListMapper.toListModelList(
+							manga = result.manga,
+							mode = ListMode.GRID,
+							flags = MangaListMapper.NO_SAVED,
+						),
 						error = null,
-						listFilter = null,
-						sortOrder = null,
+						listFilter = result.listFilter,
+						sortOrder = result.sortOrder,
 					)
 				} else {
 					null
@@ -247,7 +244,6 @@ class SearchViewModel @Inject constructor(
 				SearchResultsListModel(
 					titleResId = 0,
 					source = LocalMangaSource,
-					hasMore = true,
 					list = emptyList(),
 					error = error,
 					listFilter = null,
