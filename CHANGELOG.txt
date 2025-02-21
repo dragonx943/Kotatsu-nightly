@@ -1,21 +1,7 @@
 ### App Updates:
 
-- Fixes:
-	- Recalculate manga progress on cover image
-	- Deleted favourites are updated (Bug)
-	- Warnings when building (Advanced)
-- Improvements:
-	- Progress visibility on details menu
-	- Global search + Author search support
-	- Add items + Improved reading interface
-- Restore: Reader info bar outline
-- Update translations: Czech, Portuguese, Vietnamese, Serbian,...
-- Advanced: Update dependencies (libs + parsers)
+- Nothing changed...
 
 ### Parser Updates:
 
-- [ExHentai] Add search by author
-- [CManga] Fixes
-- [Grouple] Small fixes
-- [MangaDex] Add search by author
-- Improvement: Add artist filter
+- Nothing changed...
