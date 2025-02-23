@@ -123,8 +123,8 @@ jobs:
 
       - name: Update Docs + Commit 🌏
         run: |
-          git config --local user.email "gaumeo213@gmail.com"
-          git config --local user.name "hoanphonglinh"
+          git config --local user.email "bot@kotatsu.app"
+          git config --local user.name "kotatsu-bot"
           if [[ -n $(git status -s) ]]; then
             git add README.md
             git commit -m "Bump build number to ${{ needs.build.outputs.new_tag }}"
