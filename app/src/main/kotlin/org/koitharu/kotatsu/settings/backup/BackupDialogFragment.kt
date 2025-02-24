@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu.settings.backup
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,23 +15,20 @@ import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.tryLaunch
+import org.koitharu.kotatsu.core.util.progress.Progress
 import org.koitharu.kotatsu.databinding.DialogProgressBinding
 import java.io.File
-import java.io.FileOutputStream
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 
 	private val viewModel by viewModels<BackupViewModel>()
 
-	private var backup: File? = null
 	private val saveFileContract = registerForActivityResult(
 		ActivityResultContracts.CreateDocument("application/zip"),
 	) { uri ->
-		val file = backup
-		if (uri != null && file != null) {
-			saveBackup(file, uri)
+		if (uri != null) {
+			viewModel.saveBackup(uri)
 		} else {
 			dismiss()
 		}
@@ -51,6 +47,7 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		viewModel.progress.observe(viewLifecycleOwner, this::onProgressChanged)
 		viewModel.onBackupDone.observeEvent(viewLifecycleOwner, this::onBackupDone)
 		viewModel.onError.observeEvent(viewLifecycleOwner, this::onError)
+		viewModel.onBackupSaved.observeEvent(viewLifecycleOwner) { onBackupSaved() }
 	}
 
 	override fun onBuildDialog(builder: MaterialAlertDialogBuilder): MaterialAlertDialogBuilder {
@@ -68,38 +65,27 @@ class BackupDialogFragment : AlertDialogFragment<DialogProgressBinding>() {
 		dismiss()
 	}
 
-	private fun onProgressChanged(value: Float) {
+	private fun onProgressChanged(value: Progress) {
 		with(requireViewBinding().progressBar) {
 			isVisible = true
 			val wasIndeterminate = isIndeterminate
-			isIndeterminate = value < 0
-			if (value >= 0) {
-				setProgressCompat((value * max).roundToInt(), !wasIndeterminate)
+			isIndeterminate = value.isIndeterminate
+			if (!value.isIndeterminate) {
+				max = value.total
+				setProgressCompat(value.progress, !wasIndeterminate)
 			}
 		}
 	}
 
 	private fun onBackupDone(file: File) {
-		this.backup = file
 		if (!saveFileContract.tryLaunch(file.name)) {
 			Toast.makeText(requireContext(), R.string.operation_not_supported, Toast.LENGTH_SHORT).show()
 			dismiss()
 		}
 	}
 
-	private fun saveBackup(file: File, output: Uri) {
-		try {
-			requireContext().contentResolver.openFileDescriptor(output, "w")?.use { fd ->
-				FileOutputStream(fd.fileDescriptor).use {
-					it.write(file.readBytes())
-				}
-			}
-			Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_SHORT).show()
-			dismiss()
-		} catch (e: InterruptedException) {
-			throw e
-		} catch (e: Exception) {
-			onError(e)
-		}
+	private fun onBackupSaved() {
+		Toast.makeText(requireContext(), R.string.backup_saved, Toast.LENGTH_SHORT).show()
+		dismiss()
 	}
 }

@@ -317,4 +317,13 @@
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
 		tools:layout="@layout/sheet_chapters_pages" />
 
+	<org.koitharu.kotatsu.core.ui.widgets.WindowInsetHolder
+		android:id="@+id/navbarDim"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:background="@color/bg_dim_bottomsheet"
+		android:elevation="9dp"
+		tools:layout_height="10dp" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

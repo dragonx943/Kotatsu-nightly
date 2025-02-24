@@ -1,7 +1,17 @@
 ### App Updates:
 
-- Nothing changed...
+- UI (User interface) improvement: Dim navbar in details screen
+- Improvements: Use WakeLock for background operations, include reader tap settings into backups
+- Fixes: Author search, launcher icon (for Nightly)
+- Update translations: Russian, Vietnamese, Serbian, Filipino, Swedish, Turkish, Italian
 
 ### Parser Updates:
 
-- Nothing changed...
+- [SssScanlator] Small fixes
+- [CBHentai] Fix tags
+- [TruyenQQ + TruyenGG] Refactor
+- Rename source: vi/viHentai -> vi/KuroNeko [Việt Hentai]
+- Add new source: HentaiVn.buzz [vi]
+- Update source domain:
+	- pt: SssScanlator
+	- vi: Vcomycs, SayHentai, DocTruyen3Q, NetTruyen

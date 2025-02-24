@@ -79,7 +79,6 @@ import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
-import org.koitharu.kotatsu.core.util.ext.setNavigationBarTransparentCompat
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.databinding.LayoutDetailsTableBinding
@@ -152,8 +151,9 @@ class DetailsActivity :
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { sheet ->
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
-			BottomSheetBehavior.from(sheet)
-				.addBottomSheetCallback(DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout))
+			BottomSheetBehavior.from(sheet).addBottomSheetCallback(
+				DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout, checkNotNull(viewBinding.navbarDim)),
+			)
 		}
 		TitleExpandListener(viewBinding.textViewTitle).attach()
 
@@ -464,9 +464,6 @@ class DetailsActivity :
 		viewBinding.scrollView.updatePadding(
 			bottom = insets.bottom,
 		)
-		viewBinding.containerBottomSheet?.let { bs ->
-			window.setNavigationBarTransparentCompat(this, bs.elevation, 0.9f)
-		}
 	}
 
 	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(infoBinding) {
