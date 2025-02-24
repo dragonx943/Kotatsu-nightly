@@ -6,7 +6,11 @@
 	- Use WakeLock for background operations
 	- Include reader tap settings into backups
 	- Add option to disable captcha notification for specific source
-- Fixes: Author search, app icon / launcher icon (for Nightly)
+- Fixes: 
+	- Author search
+	- App icon / launcher icon (for Nightly)
+	- DateTimeAgo formatting
+	- Checking for removed manga updates (Reported by users)
 - Update translations: Russian, Vietnamese, Serbian, Filipino, Swedish, Turkish, Italian
 - Advanced: Update dependencies (parsers)
 
