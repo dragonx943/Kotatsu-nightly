@@ -1,9 +1,14 @@
 ### App Updates:
 
 - UI (User interface) improvement: Dim navbar in details screen
-- Improvements: Use WakeLock for background operations, include reader tap settings into backups
-- Fixes: Author search, launcher icon (for Nightly)
+- UI (User interface) fix: Tracking (Report by users)
+- Improvements: 
+	- Use WakeLock for background operations
+	- Include reader tap settings into backups
+	- Add option to disable captcha notification for specific source
+- Fixes: Author search, app icon / launcher icon (for Nightly)
 - Update translations: Russian, Vietnamese, Serbian, Filipino, Swedish, Turkish, Italian
+- Advanced: Update dependencies (parsers)
 
 ### Parser Updates:
 
