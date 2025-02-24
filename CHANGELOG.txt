@@ -1,12 +1,15 @@
 ### App Updates:
 
 - UI (User interface) improvement: Dim navbar in details screen
-- UI (User interface) fix: Tracking (Report by users)
+- UI (User interface) fix: Tracking (Reported by users)
 - Improvements: 
 	- Use WakeLock for background operations
 	- Include reader tap settings into backups
 	- Add option to disable captcha notification for specific source
+	- Data synchronization: Add new server (Provided by Nightly contributors)
 - Fixes: 
+	- App crashes / Reading bug
+	- Locale changing bug
 	- Author search
 	- App icon / launcher icon (for Nightly)
 	- DateTimeAgo formatting
