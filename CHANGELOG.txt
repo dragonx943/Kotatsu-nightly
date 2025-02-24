@@ -11,7 +11,7 @@
 - [CBHentai] Fix tags
 - [TruyenQQ + TruyenGG] Refactor
 - Rename source: vi/viHentai -> vi/KuroNeko [Việt Hentai]
-- Add new source: HentaiVn.buzz [vi]
+- Add new source: HentaiVn.buzz [vi], HentaiZ [vi]
 - Update source domain:
 	- pt: SssScanlator
 	- vi: Vcomycs, SayHentai, DocTruyen3Q, NetTruyen
