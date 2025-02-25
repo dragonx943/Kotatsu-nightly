@@ -1,29 +1,8 @@
 ### App Updates:
 
-- UI (User interface) improvement: Dim navbar in details screen
-- UI (User interface) fix: Tracking (Reported by users)
-- Improvements: 
-	- Use WakeLock for background operations
-	- Include reader tap settings into backups
-	- Add option to disable captcha notification for specific source
-	- Data synchronization: Add new server (Provided by Nightly contributors)
-- Fixes: 
-	- App crashes / Reading bug
-	- Locale changing bug
-	- Author search
-	- App icon / launcher icon (for Nightly)
-	- DateTimeAgo formatting
-	- Checking for removed manga updates (Reported by users)
-- Update translations: Russian, Vietnamese, Serbian, Filipino, Swedish, Turkish, Italian
-- Advanced: Update dependencies (parsers)
+- Nothing changed...
 
 ### Parser Updates:
 
-- [SssScanlator] Small fixes
-- [CBHentai] Fix tags
-- [TruyenQQ + TruyenGG] Refactor
-- Rename source: vi/viHentai -> vi/KuroNeko [Việt Hentai]
-- Add new source: HentaiVn.buzz [vi], HentaiZ [vi]
-- Update source domain:
-	- pt: SssScanlator
-	- vi: Vcomycs, SayHentai, DocTruyen3Q, NetTruyen
+- [Weeb Central] Fixes
+- [NHentai.xxx] Fixes
