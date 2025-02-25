@@ -1,8 +1,9 @@
 ### App Updates:
 
-- Nothing changed...
+- Improvement: Dynamic peek height for BS in details screen
+- Advanced: Use "safe" for getQuantityString
 
 ### Parser Updates:
 
-- [Weeb Central] Fixes
-- [NHentai.xxx] Fixes
+- Rename source: pt/SssScanlator -> pt/YomuComics
+- Add new source: PointZero Toons [pt]
