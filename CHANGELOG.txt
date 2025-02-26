@@ -1,6 +1,6 @@
 ### App Updates:
 
-- Improvement: Change window insets handling approach, batch
+- Improvement: Change window insets handling approach (UI), batch
 - Fixes: Batch, "Deflater has been closed" errors
 
 ### Parser Updates:
