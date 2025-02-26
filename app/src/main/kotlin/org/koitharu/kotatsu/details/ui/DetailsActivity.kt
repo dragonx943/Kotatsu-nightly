@@ -6,17 +6,20 @@ import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup.MarginLayoutParams
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.graphics.Insets
 import androidx.core.text.method.LinkMovementMethodCompat
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
+import androidx.core.view.updatePaddingRelative
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil3.ImageLoader
 import coil3.request.ImageRequest
@@ -57,6 +60,7 @@ import org.koitharu.kotatsu.core.parser.favicon.faviconUri
 import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.ui.BaseListAdapter
 import org.koitharu.kotatsu.core.ui.OnContextClickListenerCompat
+import org.koitharu.kotatsu.core.ui.dialog.buildAlertDialog
 import org.koitharu.kotatsu.core.ui.image.CoverSizeResolver
 import org.koitharu.kotatsu.core.ui.image.FaviconDrawable
 import org.koitharu.kotatsu.core.ui.image.TextDrawable
@@ -68,17 +72,22 @@ import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.FileSize
 import org.koitharu.kotatsu.core.util.LocaleUtils
+import org.koitharu.kotatsu.core.util.ext.consumeRelative
+import org.koitharu.kotatsu.core.util.ext.copyToClipboard
 import org.koitharu.kotatsu.core.util.ext.crossfade
 import org.koitharu.kotatsu.core.util.ext.defaultPlaceholders
 import org.koitharu.kotatsu.core.util.ext.drawable
 import org.koitharu.kotatsu.core.util.ext.drawableStart
+import org.koitharu.kotatsu.core.util.ext.end
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.getQuantityStringSafe
 import org.koitharu.kotatsu.core.util.ext.isTextTruncated
 import org.koitharu.kotatsu.core.util.ext.joinToStringWithLimit
 import org.koitharu.kotatsu.core.util.ext.mangaSourceExtra
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
 import org.koitharu.kotatsu.core.util.ext.parentView
+import org.koitharu.kotatsu.core.util.ext.start
 import org.koitharu.kotatsu.core.util.ext.textAndVisible
 import org.koitharu.kotatsu.databinding.ActivityDetailsBinding
 import org.koitharu.kotatsu.databinding.LayoutDetailsTableBinding
@@ -100,8 +109,8 @@ import org.koitharu.kotatsu.list.ui.size.StaticItemSizeResolver
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.util.ifNullOrEmpty
+import org.koitharu.kotatsu.parsers.util.nullIfEmpty
 import org.koitharu.kotatsu.scrobbling.common.domain.model.ScrobblingInfo
-import org.koitharu.kotatsu.search.domain.SearchKind
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.google.android.material.R as materialR
@@ -109,7 +118,7 @@ import com.google.android.material.R as materialR
 @AndroidEntryPoint
 class DetailsActivity :
 	BaseActivity<ActivityDetailsBinding>(),
-	View.OnClickListener,
+	View.OnClickListener, OnApplyWindowInsetsListener,
 	View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, View.OnLayoutChangeListener,
 	ViewTreeObserver.OnDrawListener, ChipsView.OnChipClickListener, OnListItemClickListener<Bookmark>,
 	OnContextClickListenerCompat, SwipeRefreshLayout.OnRefreshListener {
@@ -140,6 +149,7 @@ class DetailsActivity :
 		infoBinding.textViewAuthor.setOnClickListener(this)
 		infoBinding.textViewSource.setOnClickListener(this)
 		viewBinding.imageViewCover.setOnClickListener(this)
+		viewBinding.textViewTitle.setOnClickListener(this)
 		viewBinding.buttonDescriptionMore.setOnClickListener(this)
 		viewBinding.buttonScrobblingMore.setOnClickListener(this)
 		viewBinding.buttonRelatedMore.setOnClickListener(this)
@@ -150,15 +160,17 @@ class DetailsActivity :
 		viewBinding.chipsTags.onChipClickListener = this
 		TitleScrollCoordinator(viewBinding.textViewTitle).attach(viewBinding.scrollView)
 		viewBinding.containerBottomSheet?.let { sheet ->
+			sheet.addOnLayoutChangeListener(this)
 			onBackPressedDispatcher.addCallback(BottomSheetCollapseCallback(sheet))
 			BottomSheetBehavior.from(sheet).addBottomSheetCallback(
 				DetailsBottomSheetCallback(viewBinding.swipeRefreshLayout, checkNotNull(viewBinding.navbarDim)),
 			)
 		}
-		TitleExpandListener(viewBinding.textViewTitle).attach()
+		ViewCompat.setOnApplyWindowInsetsListener(viewBinding.root, this)
 
 		val appRouter = router
 		viewModel.mangaDetails.filterNotNull().observe(this, ::onMangaUpdated)
+		viewModel.coverUrl.observe(this, ::loadCover)
 		viewModel.onMangaRemoved.observeEvent(this, ::onMangaRemoved)
 		viewModel.onError
 			.filterNot { appRouter.isChapterPagesSheetShown() }
@@ -205,8 +217,9 @@ class DetailsActivity :
 	override fun onClick(v: View) {
 		when (v.id) {
 			R.id.textView_author -> {
-				val author = viewModel.manga.value?.author ?: return
-				router.openSearch(author, SearchKind.AUTHOR)
+				val manga = viewModel.manga.value
+				val author = manga?.author ?: return
+				router.showAuthorDialog(author, manga.source)
 			}
 
 			R.id.textView_source -> {
@@ -227,7 +240,7 @@ class DetailsActivity :
 			R.id.imageView_cover -> {
 				val manga = viewModel.manga.value ?: return
 				router.openImage(
-					url = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl } ?: return,
+					url = viewModel.coverUrl.value ?: return,
 					source = manga.source,
 					anchor = v,
 				)
@@ -251,6 +264,17 @@ class DetailsActivity :
 			R.id.button_related_more -> {
 				val manga = viewModel.manga.value ?: return
 				router.openRelated(manga)
+			}
+
+			R.id.textView_title -> {
+				val title = viewModel.manga.value?.title?.nullIfEmpty() ?: return
+				buildAlertDialog(this) {
+					setMessage(title)
+					setNegativeButton(R.string.close, null)
+					setPositiveButton(androidx.preference.R.string.copy) { _, _ ->
+						copyToClipboard(getString(R.string.content_type_manga), title)
+					}
+				}.show()
 			}
 		}
 	}
@@ -323,6 +347,38 @@ class DetailsActivity :
 	) {
 		with(viewBinding) {
 			buttonDescriptionMore.isVisible = textViewDescription.isTextTruncated
+			containerBottomSheet?.let { sheet ->
+				val peekHeight = BottomSheetBehavior.from(sheet).peekHeight
+				if (scrollView.paddingBottom != peekHeight) {
+					scrollView.updatePadding(bottom = peekHeight)
+				}
+			}
+		}
+	}
+
+	override fun onApplyWindowInsets(v: View, insets: WindowInsetsCompat): WindowInsetsCompat {
+		val barsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+		if (viewBinding.cardChapters != null) {
+			// landscape
+			viewBinding.cardChapters?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+				topMargin = barsInsets.top + resources.getDimensionPixelOffset(R.dimen.grid_spacing_outer)
+				marginEnd = barsInsets.end(v) + resources.getDimensionPixelOffset(R.dimen.side_card_offset)
+				bottomMargin = barsInsets.bottom + resources.getDimensionPixelOffset(R.dimen.side_card_offset)
+			}
+			viewBinding.scrollView.updatePaddingRelative(
+				bottom = barsInsets.bottom,
+				start = barsInsets.start(v),
+			)
+			viewBinding.appbar.updatePaddingRelative(
+				start = barsInsets.start(v),
+			)
+			return WindowInsetsCompat.Builder(insets)
+				.setInsets(
+					WindowInsetsCompat.Type.systemBars(),
+					barsInsets.consumeRelative(v, end = true, bottom = true),
+				).build()
+		} else {
+			return insets
 		}
 	}
 
@@ -388,7 +444,6 @@ class DetailsActivity :
 
 	private fun onMangaUpdated(details: MangaDetails) {
 		val manga = details.toManga()
-		loadCover(manga)
 		with(viewBinding) {
 			textViewTitle.text = manga.title
 			textViewSubtitle.textAndVisible = manga.altTitle
@@ -451,21 +506,6 @@ class DetailsActivity :
 		finishAfterTransition()
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding.root.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
-		viewBinding.cardChapters?.updateLayoutParams<MarginLayoutParams> {
-			val baseOffset = leftMargin
-			bottomMargin = insets.bottom + baseOffset
-			topMargin = insets.bottom + baseOffset
-		}
-		viewBinding.scrollView.updatePadding(
-			bottom = insets.bottom,
-		)
-	}
-
 	private fun onHistoryChanged(info: HistoryInfo, isLoading: Boolean) = with(infoBinding) {
 		textViewChapters.text = when {
 			isLoading -> getString(R.string.loading_)
@@ -477,7 +517,7 @@ class DetailsActivity :
 
 			info.totalChapters == 0 -> getString(R.string.no_chapters)
 			info.totalChapters == -1 -> getString(R.string.error_occurred)
-			else -> resources.getQuantityString(R.plurals.chapters, info.totalChapters, info.totalChapters)
+			else -> resources.getQuantityStringSafe(R.plurals.chapters, info.totalChapters, info.totalChapters)
 				.withEstimatedTime(info.estimatedTime)
 		}
 		textViewProgress.textAndVisible = if (info.percent <= 0f) {
@@ -520,8 +560,7 @@ class DetailsActivity :
 		viewBinding.chipsTags.setChips(listMapper.mapTags(manga.tags))
 	}
 
-	private fun loadCover(manga: Manga) {
-		val imageUrl = manga.largeCoverUrl.ifNullOrEmpty { manga.coverUrl }
+	private fun loadCover(imageUrl: String?) {
 		val lastResult = CoilUtils.result(viewBinding.imageViewCover)
 		if (lastResult is SuccessResult && lastResult.request.data == imageUrl) {
 			return
@@ -531,10 +570,9 @@ class DetailsActivity :
 			.size(CoverSizeResolver(viewBinding.imageViewCover))
 			.scale(Scale.FILL)
 			.data(imageUrl)
-			.mangaSourceExtra(manga.source)
+			.mangaSourceExtra(viewModel.getMangaOrNull()?.source)
 			.crossfade(this)
 			.lifecycle(this)
-			.placeholderMemoryCacheKey(manga.coverUrl)
 		val previousDrawable = lastResult?.drawable
 		if (previousDrawable != null) {
 			request.fallback(previousDrawable)

@@ -1,26 +1,16 @@
 ### App Updates:
 
-- UI (User interface) improvement: Dim navbar in details screen
-- UI (User interface) fix: Tracking (Report by users)
-- Improvements: 
-	- Use WakeLock for background operations
-	- Include reader tap settings into backups
-	- Add option to disable captcha notification for specific source
-- Fixes: 
-	- Author search
-	- App icon / launcher icon (for Nightly)
-	- DateTimeAgo formatting
-	- Checking for removed manga updates (Reported by users)
-- Update translations: Russian, Vietnamese, Serbian, Filipino, Swedish, Turkish, Italian
-- Advanced: Update dependencies (parsers)
+- Improvement: Change window insets handling approach, batch
+- Fixes: Batch, "Deflater has been closed" errors
 
 ### Parser Updates:
 
-- [SssScanlator] Small fixes
-- [CBHentai] Fix tags
-- [TruyenQQ + TruyenGG] Refactor
-- Rename source: vi/viHentai -> vi/KuroNeko [Việt Hentai]
-- Add new source: HentaiVn.buzz [vi], HentaiZ [vi]
+- [CBHentai] Small fixes
+- Add new source: Buon Dua [vi]
 - Update source domain:
-	- pt: SssScanlator
-	- vi: Vcomycs, SayHentai, DocTruyen3Q, NetTruyen
+	- vi: Buon Dua
+	- tr: CloverManga, DomalFansub, GloryManga, Grimelek, MangaGezgini, MilaSub, RuyaManga, WebtoonHatti, YaoiFlix
+- Rename source: tr/YaoiMangaOku -> tr/Yetişkin Rüya Manga
+- Sources that will no longer work (Marked as Broken):
+	- tr: ImparatorManga, NabiScans, MangaKazani, MangaSiginagi, PrunusScans, RobinManga, EpikMan
+- Advanced: Improve + Refactor for some sources (Global)

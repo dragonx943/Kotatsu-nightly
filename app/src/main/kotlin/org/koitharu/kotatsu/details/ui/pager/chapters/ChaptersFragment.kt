@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +26,7 @@ import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.widgets.ChipsView
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
@@ -43,12 +48,18 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class ChaptersFragment :
 	BaseFragment<FragmentChaptersBinding>(),
-	OnListItemClickListener<ChapterListItem>, ChipsView.OnChipClickListener {
+	OnListItemClickListener<ChapterListItem>,
+	OnApplyWindowInsetsListener,
+	RecyclerViewOwner,
+	ChipsView.OnChipClickListener {
 
 	private val viewModel by ChaptersPagesViewModel.ActivityVMLazy(this)
 
 	private var chaptersAdapter: ChaptersAdapter? = null
 	private var selectionController: ListSelectionController? = null
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerViewChapters
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -73,6 +84,7 @@ class ChaptersFragment :
 				LinearLayoutManager(context)
 			}
 		}
+		ViewCompat.setOnApplyWindowInsetsListener(binding.root, this)
 		with(binding.recyclerViewChapters) {
 			addItemDecoration(TypedListSpacingDecoration(context, true))
 			checkNotNull(selectionController).attachToRecyclerView(this)
@@ -129,7 +141,24 @@ class ChaptersFragment :
 		viewModel.setSelectedBranch(data.titleText)
 	}
 
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
+	override fun onApplyWindowInsets(
+		v: View,
+		insets: WindowInsetsCompat
+	): WindowInsetsCompat {
+		viewBinding?.run {
+			val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+			recyclerViewChapters.updatePadding(
+				left = bars.left,
+				right = bars.right,
+				bottom = bars.bottom,
+			)
+			chipsFilter.updatePadding(
+				left = bars.left,
+				right = bars.right,
+			)
+		}
+		return WindowInsetsCompat.CONSUMED
+	}
 
 	private fun onChaptersChanged(list: List<ListModel>) {
 		val adapter = chaptersAdapter ?: return

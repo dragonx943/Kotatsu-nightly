@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu.details.ui.pager.pages
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.view.ActionMode
 import androidx.collection.ArraySet
-import androidx.core.graphics.Insets
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -31,7 +31,9 @@ import org.koitharu.kotatsu.core.ui.list.BoundsScrollListener
 import org.koitharu.kotatsu.core.ui.list.ListSelectionController
 import org.koitharu.kotatsu.core.ui.list.OnListItemClickListener
 import org.koitharu.kotatsu.core.ui.util.PagerNestedScrollHelper
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.util.RecyclerViewScrollCallback
+import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
 import org.koitharu.kotatsu.core.util.ext.findAppCompatDelegate
 import org.koitharu.kotatsu.core.util.ext.findParentCallback
 import org.koitharu.kotatsu.core.util.ext.observe
@@ -53,7 +55,9 @@ import kotlin.math.roundToInt
 @AndroidEntryPoint
 class PagesFragment :
 	BaseFragment<FragmentPagesBinding>(),
-	OnListItemClickListener<PageThumbnail>, ListSelectionController.Callback {
+	OnListItemClickListener<PageThumbnail>,
+	RecyclerViewOwner,
+	ListSelectionController.Callback {
 
 	@Inject
 	lateinit var coil: ImageLoader
@@ -74,6 +78,9 @@ class PagesFragment :
 	private var selectionController: ListSelectionController? = null
 
 	private val spanSizeLookup = SpanSizeLookup()
+
+	override val recyclerView: RecyclerView?
+		get() = viewBinding?.recyclerView
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -111,6 +118,7 @@ class PagesFragment :
 			clickListener = this@PagesFragment,
 		)
 		viewModel.gridScale.observe(viewLifecycleOwner, ::onGridScaleChanged) // before rv initialization
+		binding.recyclerView.consumeInsetsAsPadding(Gravity.START or Gravity.BOTTOM or Gravity.END)
 		with(binding.recyclerView) {
 			addItemDecoration(TypedListSpacingDecoration(context, false))
 			checkNotNull(selectionController).attachToRecyclerView(this)
@@ -141,8 +149,6 @@ class PagesFragment :
 		spanSizeLookup.invalidateCache()
 		super.onDestroyView()
 	}
-
-	override fun onWindowInsetsChanged(insets: Insets) = Unit
 
 	override fun onItemClick(item: PageThumbnail, view: View) {
 		if (selectionController?.onItemClick(item.page.id) == true) {

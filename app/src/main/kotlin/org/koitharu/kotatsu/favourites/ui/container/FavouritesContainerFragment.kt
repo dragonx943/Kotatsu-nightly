@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import androidx.appcompat.view.ActionMode
-import androidx.core.graphics.Insets
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import coil3.ImageLoader
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,9 +18,11 @@ import org.koitharu.kotatsu.R
 import org.koitharu.kotatsu.core.nav.router
 import org.koitharu.kotatsu.core.ui.BaseFragment
 import org.koitharu.kotatsu.core.ui.util.ActionModeListener
+import org.koitharu.kotatsu.core.ui.util.RecyclerViewOwner
 import org.koitharu.kotatsu.core.ui.util.ReversibleActionObserver
 import org.koitharu.kotatsu.core.util.ext.addMenuProvider
 import org.koitharu.kotatsu.core.util.ext.enqueueWith
+import org.koitharu.kotatsu.core.util.ext.findCurrentPagerFragment
 import org.koitharu.kotatsu.core.util.ext.newImageRequest
 import org.koitharu.kotatsu.core.util.ext.observe
 import org.koitharu.kotatsu.core.util.ext.observeEvent
@@ -32,13 +34,19 @@ import org.koitharu.kotatsu.databinding.ItemEmptyStateBinding
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBinding>(), ActionModeListener,
-	ViewStub.OnInflateListener, View.OnClickListener {
+class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBinding>(),
+	ActionModeListener,
+	RecyclerViewOwner,
+	ViewStub.OnInflateListener,
+	View.OnClickListener {
 
 	@Inject
 	lateinit var coil: ImageLoader
 
 	private val viewModel: FavouritesContainerViewModel by viewModels()
+
+	override val recyclerView: RecyclerView?
+		get() = (findCurrentFragment() as? RecyclerViewOwner)?.recyclerView
 
 	override fun onCreateViewBinding(
 		inflater: LayoutInflater,
@@ -67,13 +75,6 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 	override fun onDestroyView() {
 		actionModeDelegate.removeListener(this)
 		super.onDestroyView()
-	}
-
-	override fun onWindowInsetsChanged(insets: Insets) {
-		viewBinding?.tabs?.updatePadding(
-			left = insets.left,
-			right = insets.right,
-		)
 	}
 
 	override fun onActionModeStarted(mode: ActionMode) {
@@ -111,5 +112,11 @@ class FavouritesContainerFragment : BaseFragment<FragmentFavouritesContainerBind
 			tabs.isGone = isEmpty
 			stubEmpty.isVisible = isEmpty
 		}
+	}
+
+	private fun findCurrentFragment(): Fragment? {
+		return childFragmentManager.findCurrentPagerFragment(
+			viewBinding?.pager ?: return null,
+		)
 	}
 }
