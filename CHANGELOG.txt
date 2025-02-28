@@ -1,16 +1,7 @@
 ### App Updates:
 
-- Improvement: Change window insets handling approach (UI), batch
-- Fixes: Batch, "Deflater has been closed" errors
+- Coming Soon... ¯\_(ツ)_/¯
 
 ### Parser Updates:
 
-- [CBHentai] Small fixes
-- Add new source: Buon Dua [vi]
-- Update source domain:
-	- vi: Buon Dua
-	- tr: CloverManga, DomalFansub, GloryManga, Grimelek, MangaGezgini, MilaSub, RuyaManga, WebtoonHatti, YaoiFlix
-- Rename source: tr/YaoiMangaOku -> tr/Yetişkin Rüya Manga
-- Sources that will no longer work (Marked as Broken):
-	- tr: ImparatorManga, NabiScans, MangaKazani, MangaSiginagi, PrunusScans, RobinManga, EpikMan
-- Advanced: Improve + Refactor for some sources (Global)
+- Coming Soon... ¯\_(ツ)_/¯
