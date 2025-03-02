@@ -1,7 +1,15 @@
 ### App Updates:
 
-- Coming Soon... ¯\_(ツ)_/¯
+- Improvement: Database, sync server
+- Fixes: Database migration bugs, compatibility and parsers
+- Advanced: Update dependencies (libs + parsers)
 
 ### Parser Updates:
 
-- Coming Soon... ¯\_(ツ)_/¯
+- Fixes + Refactor (Global): Some warnings when building parsers
+- Advanced:
+	- Add new parsers structure + Regenerate old structure into "Legacy"
+	- Remove deprecated Manga constructor and introduce authors field
+	- Change `name` in chapter to `title`
+	- Migrate `altTitle` to `Set<String>`
+	- Misc...
