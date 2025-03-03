@@ -1,15 +1,17 @@
 ### App Updates:
 
-- Improvement: Database, sync server
-- Fixes: Database migration bugs, compatibility and parsers
-- Advanced: Update dependencies (libs + parsers)
+- UI (User interface) improvement: Reader actions bar
+- Improvement: Global search
+- Fix: Blank cover image in details screen (Reported by users)
+- Advanced: Update dependencies (parsers)
 
 ### Parser Updates:
 
-- Fixes + Refactor (Global): Some warnings when building parsers
-- Advanced:
-	- Add new parsers structure + Regenerate old structure into "Legacy"
-	- Remove deprecated Manga constructor and introduce authors field
-	- Change `name` in chapter to `title`
-	- Migrate `altTitle` to `Set<String>`
-	- Misc...
+- [Global - Madara] Fixes
+- [CBHentai + HentaiZ] Fixes
+- [Mangakakalot.gg] Fix tags, remove "description"
+- Add new source: MangaPill [en]
+- Rename source: en/Mangakakalot.com -> en/Mangakakalot.gg
+- Update source domain:
+	- en: Mangakakalot.gg
+	- vi: HentaiZ, CBHentai, HentaiVN.plus, TruyenVn, CManga, Dưa Leo Truyện, Hentai18VN, HentaiVn.buzz, LXManga, Vcomycs, HamTruyen, NetTruyen, NetTruyenFE, NetTruyenLL, NetTruyenSSR, NetTruyenUU, NewTruyen, TopTruyen
