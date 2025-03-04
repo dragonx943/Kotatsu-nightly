@@ -1,6 +1,8 @@
 ### App Updates:
 
-- Nothing changed...
+- UI (User interface) improvement: Error details dialog
+- Fixes + Improvement: Bump version, Sheet, Main + Details activity, etc...
+- Advanced: Update translation files (Base)
 
 ### Parser Updates:
 
