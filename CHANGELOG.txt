@@ -1,17 +1,7 @@
 ### App Updates:
 
-- UI (User interface) improvement: Reader actions bar
-- Improvement: Global search
-- Fix: Blank cover image in details screen (Reported by users)
-- Advanced: Update dependencies (parsers)
+- Nothing changed...
 
 ### Parser Updates:
 
-- [Global - Madara] Fixes
-- [CBHentai + HentaiZ] Fixes
-- [Mangakakalot.gg] Fix tags, remove "description"
-- Add new source: MangaPill [en]
-- Rename source: en/Mangakakalot.com -> en/Mangakakalot.gg
-- Update source domain:
-	- en: Mangakakalot.gg
-	- vi: HentaiZ, CBHentai, HentaiVN.plus, TruyenVn, CManga, Dưa Leo Truyện, Hentai18VN, HentaiVn.buzz, LXManga, Vcomycs, HamTruyen, NetTruyen, NetTruyenFE, NetTruyenLL, NetTruyenSSR, NetTruyenUU, NewTruyen, TopTruyen
+- Add new source: TruyenHentai18 [vi]
