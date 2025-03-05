@@ -1,9 +1,8 @@
 ### App Updates:
 
-- UI (User interface) improvement: Error details dialog
-- Fixes + Improvement: Bump version, Sheet, Main + Details activity, etc...
-- Advanced: Update translation files (Base)
+- Fix: Window insets handling
 
 ### Parser Updates:
 
-- Add new source: TruyenHentai18 [vi]
+- [NewTruyen] Small fixes
+- Update source domain (en): Manganato, Mangakakalot.gg, MangaNelo.com
