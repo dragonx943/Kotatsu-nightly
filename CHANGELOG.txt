@@ -9,10 +9,11 @@
 
 ### Parser Updates:
 
-- [Dragon Translation] Remake parser
+- [ComicK] Improvements
 - [MeHentaiVN] Fixes
 - [NewTruyen] Fixes
-- [ComicK] Improvements
+- [NHentai.xxx] Fixes
+- [Dragon Translation] Remake parser
 - Add new source: Nhentai World (Draft+, vi)
 - Sources that will no longer work (+):
 	- pt: SussyScan
