@@ -3,13 +3,12 @@ package org.koitharu.kotatsu.browser.cloudflare
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,21 +17,19 @@ import kotlinx.coroutines.yield
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koitharu.kotatsu.R
-import org.koitharu.kotatsu.browser.WebViewBackPressedCallback
+import org.koitharu.kotatsu.browser.BaseBrowserActivity
 import org.koitharu.kotatsu.core.exceptions.CloudFlareProtectedException
 import org.koitharu.kotatsu.core.model.MangaSource
 import org.koitharu.kotatsu.core.nav.AppRouter
 import org.koitharu.kotatsu.core.network.cookies.MutableCookieJar
-import org.koitharu.kotatsu.core.ui.BaseActivity
 import org.koitharu.kotatsu.core.util.ext.configureForParser
-import org.koitharu.kotatsu.core.util.ext.consumeInsetsAsPadding
-import org.koitharu.kotatsu.databinding.ActivityBrowserBinding
+import org.koitharu.kotatsu.core.util.ext.getDisplayMessage
 import org.koitharu.kotatsu.parsers.network.CloudFlareHelper
 import javax.inject.Inject
 import com.google.android.material.R as materialR
 
 @AndroidEntryPoint
-class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCallback {
+class CloudFlareActivity : BaseBrowserActivity(), CloudFlareCallback {
 
 	private var pendingResult = RESULT_CANCELED
 
@@ -40,13 +37,9 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 	lateinit var cookieJar: MutableCookieJar
 
 	private lateinit var cfClient: CloudFlareClient
-	private var onBackPressedCallback: WebViewBackPressedCallback? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		if (!setContentViewWebViewSafe { ActivityBrowserBinding.inflate(layoutInflater) }) {
-			return
-		}
 		supportActionBar?.run {
 			setDisplayHomeAsUpEnabled(true)
 			setHomeAsUpIndicator(materialR.drawable.abc_ic_clear_material)
@@ -56,27 +49,20 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			finishAfterTransition()
 			return
 		}
-		cfClient = CloudFlareClient(cookieJar, this, url)
+		cfClient = CloudFlareClient(proxyProvider, cookieJar, this, url)
 		viewBinding.webView.configureForParser(intent?.getStringExtra(AppRouter.KEY_USER_AGENT))
-		viewBinding.webView.consumeInsetsAsPadding(Gravity.START or Gravity.END or Gravity.BOTTOM)
 		viewBinding.webView.webViewClient = cfClient
-		onBackPressedCallback = WebViewBackPressedCallback(viewBinding.webView).also {
-			onBackPressedDispatcher.addCallback(it)
+		lifecycleScope.launch {
+			try {
+				proxyProvider.applyWebViewConfig()
+			} catch (e: Exception) {
+				Snackbar.make(viewBinding.webView, e.getDisplayMessage(resources), Snackbar.LENGTH_LONG).show()
+			}
+			if (savedInstanceState == null) {
+				onTitleChanged(getString(R.string.loading_), url)
+				viewBinding.webView.loadUrl(url)
+			}
 		}
-		if (savedInstanceState == null) {
-			onTitleChanged(getString(R.string.loading_), url)
-			viewBinding.webView.loadUrl(url)
-		}
-	}
-
-	override fun onDestroy() {
-		runCatching {
-			viewBinding.webView
-		}.onSuccess {
-			it.stopLoading()
-			it.destroy()
-		}
-		super.onDestroy()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -99,20 +85,12 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onResume() {
-		super.onResume()
-		viewBinding.webView.onResume()
-	}
-
-	override fun onPause() {
-		viewBinding.webView.onPause()
-		super.onPause()
-	}
-
 	override fun finish() {
 		setResult(pendingResult)
 		super.finish()
 	}
+
+	override fun onLoadingStateChanged(isLoading: Boolean) = Unit
 
 	override fun onPageLoaded() {
 		viewBinding.progressBar.isInvisible = true
@@ -129,14 +107,6 @@ class CloudFlareActivity : BaseActivity<ActivityBrowserBinding>(), CloudFlareCal
 			CaptchaNotifier(this).dismiss(MangaSource(source))
 		}
 		finishAfterTransition()
-	}
-
-	override fun onLoadingStateChanged(isLoading: Boolean) {
-		viewBinding.progressBar.isVisible = isLoading
-	}
-
-	override fun onHistoryChanged() {
-		onBackPressedCallback?.onHistoryChanged()
 	}
 
 	override fun onTitleChanged(title: CharSequence, subtitle: CharSequence?) {

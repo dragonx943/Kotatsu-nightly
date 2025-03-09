@@ -1,8 +1,21 @@
 ### App Updates:
 
-- Fix: Window insets handling
+- UI (User interface) improvements: Reader, menu
+- Improvements:
+	- Window insets handling
+	- Alternatives search functionality
+	- Apply proxy settings to WebView
 
 ### Parser Updates:
 
-- [NewTruyen] Small fixes
-- Update source domain (en): Manganato, Mangakakalot.gg, MangaNelo.com
+- [Dragon Translation] Remake parser
+- [MeHentaiVN] Fixes
+- [NewTruyen] Fixes
+- [ComicK] Improvements
+- Add new source: Nhentai World (Draft+, vi)
+- Sources that will no longer work (+):
+	- pt: SussyScan
+	- vi: DocTruyen5s
+- Update sources domain (vi): Vcomycs, TopTruyen
+
+(+) Marked as Broken sources
