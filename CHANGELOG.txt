@@ -5,6 +5,7 @@
 	- Window insets handling
 	- Alternatives search functionality
 	- Apply proxy settings to WebView
+- Advanced: Update dependencies (parsers)
 
 ### Parser Updates:
 
