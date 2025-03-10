@@ -1,23 +1,7 @@
 ### App Updates:
 
-- UI (User interface) improvements: Reader, menu
-- Improvements:
-	- Window insets handling
-	- Alternatives search functionality
-	- Apply proxy settings to WebView
-- Advanced: Update dependencies (parsers)
+- Nothing changed...
 
 ### Parser Updates:
 
-- [ComicK] Improvements
-- [MeHentaiVN] Fixes
-- [NewTruyen] Fixes
-- [NHentai.xxx] Fixes
-- [Dragon Translation] Remake parser
-- Add new source: Nhentai World (Draft+, vi)
-- Sources that will no longer work (+):
-	- pt: SussyScan
-	- vi: DocTruyen5s
-- Update sources domain (vi): Vcomycs, TopTruyen
-
-(+) Marked as Broken sources
+- Add new source: Kumapage (id)
