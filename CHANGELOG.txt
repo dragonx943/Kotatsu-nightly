@@ -1,7 +1,9 @@
 ### App Updates:
 
-- Nothing changed...
+- Improvement: Manga link sharing
+- Fix: Tags highlighting
+- Advanced: Update dependencies (parsers)
 
 ### Parser Updates:
 
-- Add new source: Kumapage (id)
+- [Kumapage] Fixes + Tweak
