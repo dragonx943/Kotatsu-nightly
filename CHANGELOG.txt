@@ -1,9 +1,8 @@
 ### App Updates:
 
-- Improvement: Manga link sharing
-- Fix: Tags highlighting
-- Advanced: Update dependencies (parsers)
+- Nothing changed...
 
 ### Parser Updates:
 
-- [Kumapage] Fixes + Tweak
+- [Nhentai World] Fix chapters list
+- Advanced: Deprecate Manga.isNsfw
