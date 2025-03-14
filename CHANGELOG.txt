@@ -4,5 +4,6 @@
 
 ### Parser Updates:
 
-- [Nhentai World] Fix chapters list
-- Advanced: Deprecate Manga.isNsfw
+- [Nhentai World] Fix tags
+- [WpComics] Small tweak
+- Update sources domain (vi): HentaiZ, CManga, Dưa Leo Truyện, LXManga, Vcomycs, DocTruyen3Q, Ham Truyện, NetTruyenFE, NetTruyenLL, NetTruyenSSR, NetTruyenUU, NewTruyen, TopTruyen
