@@ -42,6 +42,8 @@ android {
 		nightly {
 			initWith release
 			applicationIdSuffix = '.nightly'
+			minifyEnabled true
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 		}
 	}
 	buildFeatures {
