@@ -1,6 +1,9 @@
 ### App Updates:
 
-- Fix + Improvement: Batch
+- Fixes + Improvements: 
+	- Batch
+	- Local chapters names
+	- FileNotFoundException handling
 - Update translations: Arabic, Malayalam, French, Indonesian, Russian, Vietnamese, Italian,...
 - Advanced: Update translation files (Base), dependencies (libs + parsers)
 
