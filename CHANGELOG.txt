@@ -1,9 +1,11 @@
 ### App Updates:
 
-- Nothing changed...
+- Fix + Improvement: Batch
+- Update translations: Arabic, Malayalam, French, Indonesian, Russian, Vietnamese, Italian,...
+- Advanced: Update translation files (Base), dependencies (libs + parsers)
 
 ### Parser Updates:
 
-- [Nhentai World] Fix tags
-- [WpComics] Small tweak
-- Update sources domain (vi): HentaiZ, CManga, Dưa Leo Truyện, LXManga, Vcomycs, DocTruyen3Q, Ham Truyện, NetTruyenFE, NetTruyenLL, NetTruyenSSR, NetTruyenUU, NewTruyen, TopTruyen
+- [DocTruyen5s] Fixes
+- [FlameComics] Update largeCoverUrl
+- Advanced: Expose authorization provider, fix http request processing
