@@ -6,6 +6,7 @@
 
 ### Parser Updates:
 
+- [CManga] Small fixes
 - [DocTruyen5s] Fixes
 - [FlameComics] Update largeCoverUrl
 - Advanced: Expose authorization provider, fix http request processing
