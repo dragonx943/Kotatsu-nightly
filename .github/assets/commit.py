@@ -40,10 +40,10 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
 
                 if repo['name'] == 'Kotatsu':
                     appU_status = True
-                    file.write(f"- {commit_message} - [`{commit_sha}`]({commit_url})\n")
+                    file.write(f"- {commit_message} - ([`{commit_sha}`]({commit_url}))\n")
                 elif repo['name'] == 'kotatsu-parsers':
                     parsersU_status = True
-                    file.write(f"\n### Parsers Updates:\n- {commit_message} - [`{commit_sha}`]({commit_url})\n")
+                    file.write(f"\n### Parsers Updates:\n- {commit_message} ([`{commit_sha}`]({commit_url}))\n")
 
     if not appU_status:
         file.write("- Nothing changed...\n")
