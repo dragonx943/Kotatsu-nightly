@@ -45,6 +45,13 @@ jobs:
         run: >-
           ./gradlew assembleNightly
           -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
+        continue-on-error: true
+
+      - name: Building Nightly APK (Attempt 2) 💻
+        if: failure()
+        run: >-
+          ./gradlew assembleNightly
+          -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 
       - name: Packaging Nightly APK 💻
         uses: ilharp/sign-android-release@v1
