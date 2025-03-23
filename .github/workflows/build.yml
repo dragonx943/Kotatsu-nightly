@@ -45,9 +45,9 @@ jobs:
 
       - name: Pull upstream 🌏
         run: |
-          git remote add upstream https://github.com/KotatsuApp/Kotatsu-Nightly.git
-          git fetch upstream base
-          git reset --hard upstream/base
+          git remote add upstream https://github.com/KotatsuApp/Kotatsu.git
+          git fetch upstream devel
+          git reset --hard upstream/devel
 
       - name: Grant permissions 💻
         run: chmod a+x gradlew
@@ -58,12 +58,16 @@ jobs:
           echo "new_tag=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "formatted_date=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
 
-      - name: Building new APK 💻
+      - name: Fixing for Nightly APK 🔧
+        run: |
+          sed -i '/<SwitchPreferenceCompat/,/android:title="@string\/allow_unstable_updates"/d' app/src/main/res/xml/pref_about.xml
+
+      - name: Building Nightly APK 💻
         run: >-
           ./gradlew assembleNightly
           -DparsersVersionOverride=$(curl -s https://api.github.com/repos/kotatsuapp/kotatsu-parsers/commits/master -H "Accept: application/vnd.github.sha" | cut -c -10)
 
-      - name: Packaging new APK 💻
+      - name: Packaging Nightly APK 💻
         uses: ilharp/sign-android-release@v1
         id: sign_app
         with:
@@ -83,7 +87,10 @@ jobs:
       - name: Get latest changes 📑
         id: changelog
         run: |
-          CHANGELOG=$(cat CHANGELOG.txt)
+          curl -o .github/assets/commit.py -L https://raw.githubusercontent.com/KotatsuApp/Kotatsu-nightly/nightly/.github/assets/commit.py
+          python3 commit.py
+          
+          CHANGELOG=$(cat commits.txt)
           echo "content<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
