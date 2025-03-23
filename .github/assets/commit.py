@@ -40,10 +40,10 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
 
                 if repo['name'] == 'Kotatsu':
                     appU_status = True
-                    file.write(f"- {commit_message} [`({commit_sha})`]({commit_url})\n")
+                    file.write(f"- {commit_message} - [`{commit_sha}`]({commit_url})\n")
                 elif repo['name'] == 'kotatsu-parsers':
                     parsersU_status = True
-                    file.write(f"\n### Parsers Updates:\n- {commit_message} [`({commit_sha})`]({commit_url})\n")
+                    file.write(f"\n### Parsers Updates:\n- {commit_message} - [`{commit_sha}`]({commit_url})\n")
 
     if not appU_status:
         file.write("- Nothing changed...\n")
@@ -53,10 +53,10 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
     
     file.write("\n## Contributors\n")
     ctribu_list = list(ctribu_set)
-    for contributor in ctribu_list:
-        contributor_url = f"https://github.com/{contributor}"
-        avt_url = f"https://wsrv.nl/?url=github.com/{contributor}.png?w=64&h=64&mask=circle&fit=cover&maxage=1w"
-        file.write(f'[<img src="{avt_url}" width="32" height="32" alt="{contributor}" />]({contributor_url})\n')
+    for ctribu in ctribu_list:
+        ctribu_url = f"https://github.com/{ctribu}"
+        avt_url = f"https://wsrv.nl/?url=github.com/{ctribu}.png?w=64&h=64&mask=circle&fit=cover&maxage=1w"
+        file.write(f'[<img src="{avt_url}" width="32" height="32" alt="{ctribu}" />]({ctribu_url})\n')
     
     if ctribu_list:
         if len(ctribu_list) == 1:
