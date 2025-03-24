@@ -30,7 +30,7 @@ jobs:
     outputs:
       new_tag: ${{ steps.tagger.outputs.new_tag }}
     steps:
-      - name: Checkout repository (shallow) 🚀
+      - name: Checkout repository 🚀
         uses: actions/checkout@v3
         with:
           clean: true
@@ -38,12 +38,9 @@ jobs:
 
       - name: Pull upstream 🌏
         run: |
-          rm -rf *
-          git init
-          git remote add origin https://github.com/KotatsuApp/Kotatsu.git
-          git fetch origin devel
-          git checkout devel
-          git pull origin devel
+          git remote add kotatsu https://github.com/KotatsuApp/Kotatsu.git
+          git fetch kotatsu
+          git checkout -b kotatsu kotatsu/devel
 
       - name: Setup Java enviroments 🚀
         uses: actions/setup-java@v4
