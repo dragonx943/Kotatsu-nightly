@@ -45,7 +45,8 @@ jobs:
           git checkout devel
           git pull origin devel
 
-      - uses: actions/setup-java@v4
+      - name: Setup Java enviroments 🚀
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
