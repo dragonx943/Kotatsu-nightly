@@ -36,15 +36,6 @@ jobs:
           clean: true
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Setup Android SDK 💻
-        uses: android-actions/setup-android@v3
-
       - name: Pull upstream 🌏
         run: |
           rm -rf *
@@ -53,7 +44,16 @@ jobs:
           git fetch origin devel
           git checkout devel
 
-      - name: Grant permissions 💻
+      - uses: actions/setup-java@v4 🚀
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Android SDK 🚀
+        uses: android-actions/setup-android@v3
+
+      - name: Grant permissions 🚀
         run: chmod a+x gradlew
 
       - name: Generate build number 📆
