@@ -1,4 +1,4 @@
-name: Checkout & Build App
+name: Non-update Builds
 
 on:
   schedule:
