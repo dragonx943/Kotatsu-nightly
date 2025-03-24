@@ -35,6 +35,12 @@ jobs:
         with:
           clean: true
           fetch-depth: 0
+      
+      - uses: actions/setup-java@v4 🚀
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
 
       - name: Pull upstream 🌏
         run: |
@@ -43,12 +49,7 @@ jobs:
           git remote add origin https://github.com/KotatsuApp/Kotatsu.git
           git fetch origin devel
           git checkout devel
-
-      - uses: actions/setup-java@v4 🚀
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'gradle'
+          git pull origin devel
 
       - name: Setup Android SDK 🚀
         uses: android-actions/setup-android@v3
