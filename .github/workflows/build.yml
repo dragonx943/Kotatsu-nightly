@@ -30,6 +30,12 @@ jobs:
     outputs:
       new_tag: ${{ steps.tagger.outputs.new_tag }}
     steps:
+      - name: Checkout repository (shallow) 🚀
+        uses: actions/checkout@v3
+        with:
+          clean: true
+          fetch-depth: 0
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -41,9 +47,11 @@ jobs:
 
       - name: Pull upstream 🌏
         run: |
-          git remote add upstream https://github.com/KotatsuApp/Kotatsu.git
-          git fetch upstream devel
-          git reset --hard upstream/devel
+          rm -rf *
+          git init
+          git remote add origin https://github.com/KotatsuApp/Kotatsu.git
+          git fetch origin devel
+          git checkout devel
 
       - name: Grant permissions 💻
         run: chmod a+x gradlew
