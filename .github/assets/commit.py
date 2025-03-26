@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 
-time = datetime.now() - timedelta(days=2)
+time = datetime.now() - timedelta(days=1)
 time_format = time.isoformat() + 'Z'
 
 repos = [
