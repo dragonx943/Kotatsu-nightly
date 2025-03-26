@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 
-time = datetime.now() - timedelta(days=1)
+time = datetime.now() - timedelta(days=2)
 time_format = time.isoformat() + 'Z'
 
 repos = [
@@ -31,7 +31,7 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
             commits = response.json()
 
             for commit in commits:
-                commit_message = commit['commit']['message']
+                commit_message = commit['commit']['message'].split('\n')[0]
                 commit_sha = commit['sha'][:7]
                 commit_url = commit['html_url']
                 author_login = commit['author']['login'] if commit.get('author') else commit['committer']['login']
@@ -43,12 +43,30 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
                     file.write(f"- {commit_message} - [`{commit_sha}`]({commit_url})\n")
                 elif repo['name'] == 'kotatsu-parsers':
                     parsersU_status = True
-                    file.write(f"\n### Parsers Updates:\n- {commit_message} - [`{commit_sha}`]({commit_url})\n")
 
     if not appU_status:
         file.write("- Nothing changed...\n")
     
-    if not parsersU_status:
+    if parsersU_status:
+        file.write("\n### Parsers Updates:\n")
+        for repo in repos:
+            if repo['name'] == 'kotatsu-parsers':
+                url = f'https://api.github.com/repos/{repo["owner"]}/{repo["name"]}/commits'
+                
+                response = requests.get(url, params=params)
+
+                if response.status_code == 200:
+                    commits = response.json()
+
+                    for commit in commits:
+                        commit_message = commit['commit']['message'].split('\n')[0]
+                        commit_sha = commit['sha'][:7]
+                        commit_url = commit['html_url']
+                        author_login = commit['author']['login'] if commit.get('author') else commit['committer']['login']
+                        
+                        ctribu_set.add(author_login)
+                        file.write(f"- {commit_message} - [`{commit_sha}`]({commit_url})\n")
+    else:
         file.write("\n### Parsers Updates:\n- Nothing changed...\n")
     
     file.write("\n## Contributors\n")
@@ -56,14 +74,13 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
     for ctribu in ctribu_list:
         ctribu_url = f"https://github.com/{ctribu}"
         avt_url = f"https://wsrv.nl/?url=github.com/{ctribu}.png?w=64&h=64&mask=circle&fit=cover&maxage=1w"
-        file.write(f'[<img src="{avt_url}" width="32" height="32" alt="{ctribu}" />]({ctribu_url})\n')
+        file.write(f'[<img src="{avt_url}" width="32" height="32" alt="{ctribu}" />]({ctribu_url}) ')
     
     if ctribu_list:
         if len(ctribu_list) == 1:
             ctribu_names = ctribu_list[0]
         else:
             ctribu_names = ', '.join(ctribu_list[:-1])
-            ctribu_names += f", and {ctribu_list[-1]}"
-        file.write(f"###### {ctribu_names}\n")
+        file.write(f"\n###### {ctribu_names}")
 
     print("✅ File created: 📋 commits.txt")
