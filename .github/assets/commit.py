@@ -18,7 +18,6 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
     
     ctribu_set = set()
     appU_status = False
-    parsersU_status = False
 
     file.write("### App Updates:\n")
 
@@ -34,9 +33,6 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
                 commit_message = commit['commit']['message'].split('\n')[0]
                 commit_sha = commit['sha'][:7]
                 commit_url = commit['html_url']
-                author_login = commit['author']['login'] if commit.get('author') else commit['committer']['login']
-                
-                ctribu_set.add(author_login)
 
                 if repo['name'] == 'Kotatsu':
                     appU_status = True
@@ -62,25 +58,9 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
                         commit_message = commit['commit']['message'].split('\n')[0]
                         commit_sha = commit['sha'][:7]
                         commit_url = commit['html_url']
-                        author_login = commit['author']['login'] if commit.get('author') else commit['committer']['login']
                         
-                        ctribu_set.add(author_login)
                         file.write(f"- {commit_message} - [`{commit_sha}`]({commit_url})\n")
     else:
         file.write("\n### Parsers Updates:\n- Nothing changed...\n")
-    
-    file.write("\n## Contributors\n")
-    ctribu_list = list(ctribu_set)
-    for ctribu in ctribu_list:
-        ctribu_url = f"https://github.com/{ctribu}"
-        avt_url = f"https://wsrv.nl/?url=github.com/{ctribu}.png?w=64&h=64&mask=circle&fit=cover&maxage=1w"
-        file.write(f'[<img src="{avt_url}" width="32" height="32" alt="{ctribu}" />]({ctribu_url}) ')
-    
-    if ctribu_list:
-        if len(ctribu_list) == 1:
-            ctribu_names = ctribu_list[0]
-        else:
-            ctribu_names = ', '.join(ctribu_list[:-1])
-        file.write(f"\n###### {ctribu_names}")
 
     print("✅ File created: 📋 commits.txt")
