@@ -18,6 +18,7 @@ with open('commits.txt', 'w', encoding='utf-8') as file:
     
     ctribu_set = set()
     appU_status = False
+    parsersU_status = False
 
     file.write("### App Updates:\n")
 
