@@ -31,6 +31,16 @@
 
 </div>
 
+### Certificate fingerprints
+
+```plaintext
+CA:4E:C4:54:FF:E9:45:78:11:36:93:45:B7:E9:41:09:8F:08:D0:90
+```
+
+```plaintext
+F4:D8:00:FA:8F:CF:24:8C:D5:EC:02:8B:4D:DC:65:35:BB:DA:07:11:55:AF:3A:C5:BB:35:82:36:1B:27:D5:6F
+```
+
 ### License
 
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
