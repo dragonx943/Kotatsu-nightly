@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.tagger.outputs.new_tag }}
     steps:
@@ -40,9 +40,11 @@ jobs:
           echo "new_tag=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "formatted_date=$(date +'%Y/%m/%d')" >> $GITHUB_OUTPUT
 
-      - name: Fixing for Nightly APK 🔧
+      - name: Preparing for Nightly APK 🔧
         run: |
           sed -i '/<SwitchPreferenceCompat/,/android:title="@string\/allow_unstable_updates"/d' app/src/main/res/xml/pref_about.xml
+          sed -i 's/now\.format("yyMMdd")/now.format("yyyyMMdd")/' app/build.gradle
+          sed -i 's/org\.gradle\.jvmargs=-Xmx1536M -Dkotlin\.daemon\.jvm\.options\\="-Xmx1536M"/org.gradle.jvmargs=-Xmx8192M -Dkotlin.daemon.jvm.options\\="-Xmx8192M"/' gradle.properties
 
       - name: Building Nightly APK 💻
         run: |
