@@ -42,6 +42,7 @@ jobs:
 
       - name: Preparing for Nightly APK 🔧
         run: |
+          echo "tg_backup_bot_token=${{ secrets.TELEGRAM_BOT_TOKEN }}" > local.properties
           sed -i '/<SwitchPreferenceCompat/,/android:title="@string\/allow_unstable_updates"/d' app/src/main/res/xml/pref_about.xml
           sed -i 's/now\.format("yyMMdd")/now.format("yyyyMMdd")/' app/build.gradle
           sed -i 's/org\.gradle\.jvmargs=-Xmx1536M -Dkotlin\.daemon\.jvm\.options\\="-Xmx1536M"/org.gradle.jvmargs=-Xmx8192M -Dkotlin.daemon.jvm.options\\="-Xmx8192M"/' gradle.properties
