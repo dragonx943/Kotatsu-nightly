@@ -94,7 +94,7 @@ jobs:
         continue-on-error: false
 
       - name: Packaging Nightly APK 💻
-        uses: ilharp/sign-android-release@v1
+        uses: ilharp/sign-android-release@nightly
         id: sign_app
         with:
           releaseDir: app/build/outputs/apk/nightly
@@ -102,7 +102,7 @@ jobs:
           keyAlias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          buildToolsVersion: 35.0.0
+          buildToolsVersion: 36.0.0
 
       - name: Prepare to Upload 🌏
         run: |
